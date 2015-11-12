@@ -3,11 +3,11 @@ typedef int bool;
 #define false 0 
 
 #include "I2C.h"
-#include <iostream>
-#include <cstring>
-#include <string>
-#include <fopen>
-#include <cstdint>
+//#include <cstring>
+//#include <iostream>
+//#include <string>
+//#include <fopen>
+//#include <cstdint>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -19,7 +19,7 @@ int i2cFD;
 bool _I2CLIB_open(unsigned int openMode, i2cName i2c){
     	unsigned int flags = 0;
 
-        i2cPortPath   = "/dev/i2c-" + tostr(static_cast<int>(i2c));
+        unsigned char * i2cPortPath   = "/dev/i2c-" + tostr(static_cast<int>(i2c));
 
     }
         if( (openMode & ReadOnly)   == ReadOnly     ){  flags |= O_RDONLY;  }
