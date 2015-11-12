@@ -1,3 +1,18 @@
+//#include <cstring>
+//#include <iostream>
+//#include <string>
+//#include <fopen>
+//#include <cstdint>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <linux/i2c.h>
+#include <linux/i2c-dev.h>
+#include <stdint.h>
+
+typedef int bool;
+#define true 1
+#define false 0 
 /*!
  * This enum is used for selecting file open mode.
  */
@@ -44,9 +59,8 @@ int _I2CLIB_open(unsigned int openMode, i2cName i2c );
 
 int _I2CLIB_close();
 
-int _I2CLIB_useSmbusIOCTL( direction rwMode, unsigned int8_t registerAddr,
-  transactionType smbusTransaction, i2c_smbus_data &data, unsigned int i2cDeviceAddress );
+int _I2CLIB_useSmbusIOCTL( direction rwMode, uint8_t registerAddr, transactionType smbusTransaction, union i2c_smbus_data *data, unsigned int i2cDeviceAddress );
 
-int I2CLIB_writeBlock(i2cName i2c, unsigned int8_t reg_address, i2c_smbus_data data, transactionType numBytes, unsigned int i2cDeviceAddress)
+int I2CLIB_writeBlock(i2cName i2c, uint8_t reg_address, union i2c_smbus_data *data, transactionType numBytes, unsigned int i2cDeviceAddress);
 
-int I2CLIB_read(i2cName i2c, unsigned int8_t reg_address, i2c_smbus_data data, transactionType numBytes, unsigned int i2cDeviceAddress)
+int I2CLIB_read(i2cName i2c, uint8_t reg_address, union i2c_smbus_data *data, transactionType numBytes, unsigned int i2cDeviceAddress);
