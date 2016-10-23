@@ -2,8 +2,19 @@
 #define I2C_H_
 
 /*!
-* This enum is used for selecting file open mode.
-*/
+ * This enum is used for selecting file open mode.
+ */
+enum openMode           {   ReadOnly                = 0,
+                            WriteOnly               = 1,
+                            ReadWrite               = 2,
+                            Append                  = 4,
+                            Truncate                = 8,
+                            NonBlock                = 16
+                        };
+
+/*!
+ * This enum is used for selecting file open mode.
+ */
 enum openMode           {   ReadOnly                = 0,
                             WriteOnly               = 1,
                             ReadWrite               = 2,
