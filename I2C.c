@@ -1,6 +1,7 @@
-bool    BlackI2C::open(uint openMode)
-    {
-        uint flags = 0;
+#include "I2C.h"
+
+bool open(uint openMode){
+    	uint flags = 0;
 
         if( (openMode & ReadOnly)   == ReadOnly     ){  flags |= O_RDONLY;  }
         if( (openMode & WriteOnly)  == WriteOnly    ){  flags |= O_WRONLY;  }
@@ -26,10 +27,10 @@ bool    BlackI2C::open(uint openMode)
             this->setSlave();
             return true;
         }
-    }
+}
 
-    bool    BlackI2C::close()
-    {
+bool close()
+{
         if( ::close(this->i2cFD) < 0 )
         {
             this->i2cErrors->closeError = true;
@@ -41,10 +42,10 @@ bool    BlackI2C::open(uint openMode)
             this->isOpenFlag = false;
             return true;
         }
-    }
+}
 
-inline bool BlackI2C::useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionType smbusTransaction, i2c_smbus_data &data)
-    {
+inline bool useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionType smbusTransaction, i2c_smbus_data &data, unsigned int i2cDeviceAddress)
+{
         if( rwMode == bothDirection ) { return false; }
 
         i2c_smbus_ioctl_data smbusPackage;
@@ -55,26 +56,20 @@ inline bool BlackI2C::useSmbusIOCTL(direction rwMode, uint8_t registerAddr, tran
         smbusPackage.data       = &data;
 
 
+        if( ::ioctl(this->i2cFD, I2C_SLAVE, i2cDevAddress) < 0)
+        {
+            return false;
+        }
+
         if( ::ioctl(this->i2cFD, I2C_SMBUS, &smbusPackage) < 0 )
         {
             return false;
         }
-        else
-        {
-            return true;
-        }
-    }
+        
+	return true;
+}
 
-    bool    BlackI2C::setSlave()
-    {
-        if( ::ioctl(this->i2cFD, I2C_SLAVE, this->i2cDevAddress) < 0)
-        {
-            this->i2cErrors->setSlaveError = true;
-            return false;
-        }
-        else
-        {
-            this->i2cErrors->setSlaveError = false;
-            return true;
-        }
-    }
+bool writeBlock(bus, device_adress, reg_address, pointer to data block, numBytes) <- pointer is in
+bool read(bus, device_adress, reg_address, pointer to data block, numBytes) <- pointer is out
+
+
