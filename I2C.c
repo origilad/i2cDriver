@@ -1,8 +1,23 @@
 #include "I2C.h"
+#include <iostream>
+#include <cstring>
+#include <string>
+#include <fopen>
+#include <cstdint>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <linux/i2c.h>
+#include <linux/i2c-dev.h>
 
-bool open(uint openMode){
+int i2cFD;
+
+bool _I2CLIB_open(uint openMode, i2cName i2c){
     	uint flags = 0;
 
+        i2cPortPath   = "/dev/i2c-" + tostr(static_cast<int>(i2c));
+
+    }
         if( (openMode & ReadOnly)   == ReadOnly     ){  flags |= O_RDONLY;  }
         if( (openMode & WriteOnly)  == WriteOnly    ){  flags |= O_WRONLY;  }
         if( (openMode & ReadWrite)  == ReadWrite    ){  flags |= O_RDWR;    }
@@ -10,29 +25,27 @@ bool open(uint openMode){
         if( (openMode & Truncate)   == Truncate     ){  flags |= O_TRUNC;   }
         if( (openMode & NonBlock)   == NonBlock     ){  flags |= O_NONBLOCK;}
 
-        if( ::open(this->i2cPortPath.c_str(), flags) < 0){
+        i2cFD = open(i2cPortPath.c_str(), flags)
+	if(i2cFD < 0){
 		return false;
 	}
 
         return true;
 }
 
-bool close()
+bool _I2CLIB_close()
 {
-        if( ::close(this->i2cFD) < 0 )
+        if(close(i2cFD) < 0 )
         {
-            this->i2cErrors->closeError = true;
             return false;
         }
         else
         {
-            this->i2cErrors->closeError = false;
-            this->isOpenFlag = false;
             return true;
         }
 }
 
-bool useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionType smbusTransaction, i2c_smbus_data &data, unsigned int i2cDeviceAddress)
+bool _I2CLIB_useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionType smbusTransaction, i2c_smbus_data &data, unsigned int i2cDeviceAddress)
 {
         if( rwMode == bothDirection ) { return false; }
 
@@ -46,12 +59,12 @@ bool useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionType smbus
 	/*
 	setSlave's functionality
 	*/
-        if( ::ioctl(this->i2cFD, I2C_SLAVE, i2cDevAddress) < 0)
+        if(ioctl(i2cFD, I2C_SLAVE, i2cDevAddress) < 0)
         {
             return false;
         }
 
-        if( ::ioctl(this->i2cFD, I2C_SMBUS, &smbusPackage) < 0 )
+        if(ioctl(i2cFD, I2C_SMBUS, &smbusPackage) < 0 )
         {
             return false;
         }
@@ -59,7 +72,15 @@ bool useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionType smbus
 	return true;
 }
 
-bool writeBlock(bus, device_adress, reg_address, pointer to data block, numBytes) <- pointer is in
-bool read(bus, device_adress, reg_address, pointer to data block, numBytes) <- pointer is out
-
-
+bool I2CLIB_writeBlock(i2cName i2c, uint8_t reg_address, i2c_smbus_data data, transactionType numBytes, unsigned int i2cDeviceAddress)
+{
+	_I2CLIB_open(WriteOnly, i2c);
+	_I2CLIB_useSmbusIOCTL(I2C_SMBUS_WRITE, reg_address, numBytes, data, i2cDeviceAddress);  	
+	_I2CLIB_close();
+}
+bool I2CLIB_read(i2cName i2c, uint8_t reg_address, i2c_smbus_data data, transactionType numBytes, unsigned int i2cDeviceAddress)
+{
+	_I2CLIB_open(ReadOnly, i2c);
+	_I2CLIB_useSmbusIOCTL(I2C_SMBUS_READ, reg_address, numBytes, data, i2cDeviceAddress);  	
+	_I2CLIB_close();
+}
