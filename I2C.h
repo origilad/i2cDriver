@@ -1,33 +1,33 @@
 /*!
  * This enum is used for selecting file open mode.
  */
-enum openMode           {   ReadOnly                = 0,
+typedef enum            {   ReadOnly                = 0,
                             WriteOnly               = 1,
                             ReadWrite               = 2,
                             Append                  = 4,
                             Truncate                = 8,
                             NonBlock                = 16
-                        };
+                        }openMode;
 
 /*!
  * This enum is used for setting i2c name.
  */
-enum i2cName            {   I2C_0                   = 0,
+typedef enum            {   I2C_0                   = 0,
                             I2C_1                   = 1
-                        };
+                        }i2cName;
 
 /*!
  *  This enum is used for selecting direction.
  */
-enum direction          {   input                   = 1,
+typedef enum            {   input                   = 1,
                             output                  = 2,
                             bothDirection           = (input|output)
-                        };
+                        }direction;
 
 /*!
  * This enum is used for selecting i2c bus transaction type.
  */
-enum transactionType    {   SMBUS_QUICK             = 0,
+typedef enum            {   SMBUS_QUICK             = 0,
                             SMBUS_BYTE              = 1,
                             SMBUS_BYTE_DATA         = 2,
                             SMBUS_WORD_DATA         = 3,
@@ -36,7 +36,7 @@ enum transactionType    {   SMBUS_QUICK             = 0,
                             SMBUS_I2C_BLOCK_BROKEN  = 6,
                             SMBUS_BLOCK_PROC_CALL   = 7,
                             SMBUS_I2C_BLOCK_DATA    = 8
-                        };
+                        }transactionType;
 
 inline bool _I2CLIB_setSlave();
 
