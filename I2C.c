@@ -10,23 +10,11 @@ bool open(uint openMode){
         if( (openMode & Truncate)   == Truncate     ){  flags |= O_TRUNC;   }
         if( (openMode & NonBlock)   == NonBlock     ){  flags |= O_NONBLOCK;}
 
+        if( ::open(this->i2cPortPath.c_str(), flags) < 0){
+		return false;
+	}
 
-        this->i2cFD = ::open(this->i2cPortPath.c_str(), flags);
-
-
-        if( this->i2cFD < 0 )
-        {
-            this->isOpenFlag = false;
-            this->i2cErrors->openError = true;
-            return false;
-        }
-        else
-        {
-            this->isOpenFlag = true;
-            this->i2cErrors->openError = false;
-            this->setSlave();
-            return true;
-        }
+        return true;
 }
 
 bool close()
@@ -44,7 +32,7 @@ bool close()
         }
 }
 
-inline bool useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionType smbusTransaction, i2c_smbus_data &data, unsigned int i2cDeviceAddress)
+bool useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionType smbusTransaction, i2c_smbus_data &data, unsigned int i2cDeviceAddress)
 {
         if( rwMode == bothDirection ) { return false; }
 
@@ -55,7 +43,9 @@ inline bool useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionTyp
         smbusPackage.size       = smbusTransaction;
         smbusPackage.data       = &data;
 
-
+	/*
+	setSlave's functionality
+	*/
         if( ::ioctl(this->i2cFD, I2C_SLAVE, i2cDevAddress) < 0)
         {
             return false;
