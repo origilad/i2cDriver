@@ -12,15 +12,15 @@ enum openMode           {   ReadOnly                = 0,
                             NonBlock                = 16
                         };
 
-inline bool I2CLIB_setSlave();
+inline bool _I2CLIB_setSlave();
 
-bool I2CLIB_open(uint openMode);
+bool _I2CLIB_open(uint openMode);
 
-bool I2CLIB_close();
+bool _I2CLIB_close();
 
-inline bool I2CLIB_useSmbusIOCTL( direction rwMode, uint8_t registerAddr,
+inline bool _I2CLIB_useSmbusIOCTL( direction rwMode, uint8_t registerAddr,
   transactionType smbusTransaction, i2c_smbus_data &data, unsigned int i2cDeviceAddress );
 
-bool I2CLIB_writeBlock( bus, device_adress, reg_address, pointer to data block, numBytes );
+bool _I2CLIB_writeBlock( bus, device_adress, reg_address, pointer to data block, numBytes );
 
-bool I2CLIB_read( bus, device_adress, reg_address, pointer to data block, numBytes );
+bool _I2CLIB_read( bus, device_adress, reg_address, pointer to data block, numBytes );
