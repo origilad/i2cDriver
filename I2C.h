@@ -14,7 +14,7 @@ enum openMode           {   ReadOnly                = 0,
 
 /*!
  * This enum is used for selecting file open mode.
- */
+ 
 enum openMode           {   ReadOnly                = 0,
                             WriteOnly               = 1,
                             ReadWrite               = 2,
@@ -22,14 +22,14 @@ enum openMode           {   ReadOnly                = 0,
                             Truncate                = 8,
                             NonBlock                = 16
                         };
-
+*/
 inline bool _I2CLIB_setSlave();
 
-bool _I2CLIB_open(uint openMode);
+bool _I2CLIB_open(unsigned int openMode);
 
 bool _I2CLIB_close();
 
-inline bool _I2CLIB_useSmbusIOCTL( direction rwMode, uint8_t registerAddr,
+inline bool _I2CLIB_useSmbusIOCTL( direction rwMode, unsigned int8_t registerAddr,
   transactionType smbusTransaction, i2c_smbus_data &data, unsigned int i2cDeviceAddress );
 
 bool _I2CLIB_writeBlock( bus, device_adress, reg_address, pointer to data block, numBytes );

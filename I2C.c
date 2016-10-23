@@ -1,3 +1,7 @@
+typedef int bool;
+#define true 1
+#define false 0 
+
 #include "I2C.h"
 #include <iostream>
 #include <cstring>
@@ -12,8 +16,8 @@
 
 int i2cFD;
 
-bool _I2CLIB_open(uint openMode, i2cName i2c){
-    	uint flags = 0;
+bool _I2CLIB_open(unsigned int openMode, i2cName i2c){
+    	unsigned int flags = 0;
 
         i2cPortPath   = "/dev/i2c-" + tostr(static_cast<int>(i2c));
 
@@ -45,7 +49,7 @@ bool _I2CLIB_close()
         }
 }
 
-bool _I2CLIB_useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionType smbusTransaction, i2c_smbus_data &data, unsigned int i2cDeviceAddress)
+bool _I2CLIB_useSmbusIOCTL(direction rwMode, unsigned int8_t registerAddr, transactionType smbusTransaction, i2c_smbus_data &data, unsigned int i2cDeviceAddress)
 {
         if( rwMode == bothDirection ) { return false; }
 
@@ -72,13 +76,13 @@ bool _I2CLIB_useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionTy
 	return true;
 }
 
-bool I2CLIB_writeBlock(i2cName i2c, uint8_t reg_address, i2c_smbus_data data, transactionType numBytes, unsigned int i2cDeviceAddress)
+bool I2CLIB_writeBlock(i2cName i2c, unsigned int8_t reg_address, i2c_smbus_data data, transactionType numBytes, unsigned int i2cDeviceAddress)
 {
 	_I2CLIB_open(WriteOnly, i2c);
 	_I2CLIB_useSmbusIOCTL(I2C_SMBUS_WRITE, reg_address, numBytes, data, i2cDeviceAddress);  	
 	_I2CLIB_close();
 }
-bool I2CLIB_read(i2cName i2c, uint8_t reg_address, i2c_smbus_data data, transactionType numBytes, unsigned int i2cDeviceAddress)
+bool I2CLIB_read(i2cName i2c, unsigned int8_t reg_address, i2c_smbus_data data, transactionType numBytes, unsigned int i2cDeviceAddress)
 {
 	_I2CLIB_open(ReadOnly, i2c);
 	_I2CLIB_useSmbusIOCTL(I2C_SMBUS_READ, reg_address, numBytes, data, i2cDeviceAddress);  	
