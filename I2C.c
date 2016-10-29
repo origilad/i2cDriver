@@ -5,12 +5,15 @@ typedef int bool;
 #define false 0 
 
 #include "I2C.h"
+#include <stdio.h>
 
 
 bool _I2CLIB_open(unsigned int openMode, i2cName i2c){
   unsigned int flags = 0;
 
-  unsigned char * i2cPortPath   = "/dev/i2c-" + tostr((int)(i2c));
+  char * str;
+  sprintf(str, "%d", ((int)(i2c)));
+  unsigned char * i2cPortPath   = "/dev/i2c-" + *str;
 
     
   if( (openMode & ReadOnly)   == ReadOnly     ){  flags |= O_RDONLY;  }
@@ -45,7 +48,7 @@ bool _I2CLIB_useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionTy
 {
         if( rwMode == bothDirection ) { return false; }
 
-        i2c_smbus_ioctl_data smbusPackage;
+        struct i2c_smbus_ioctl_data smbusPackage;
 
         smbusPackage.read_write = (rwMode == input ) ? I2C_SMBUS_READ : I2C_SMBUS_WRITE;
         smbusPackage.command    = registerAddr;
@@ -55,7 +58,7 @@ bool _I2CLIB_useSmbusIOCTL(direction rwMode, uint8_t registerAddr, transactionTy
 	/*
 	setSlave's functionality
 	*/
-        if(ioctl(i2cFD, I2C_SLAVE, i2cDevAddress) < 0)
+        if(ioctl(i2cFD, I2C_SLAVE, i2cDeviceAddress) < 0)
         {
             return false;
         }
